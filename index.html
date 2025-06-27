@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=350, initial-scale=1.0">
+  <title>Cronômetro Live</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="controls">
+      <select id="mode">
+        <option value="up">Contagem Crescente</option>
+        <option value="down">Contagem Regressiva</option>
+      </select>
+      <input type="number" id="hours" min="0" max="99" placeholder="Horas" />
+      <button id="start" title="Iniciar"><i data-lucide="play"></i></button>
+      <button id="stop" title="Parar"><i data-lucide="pause"></i></button>
+      <button id="reset" title="Zerar"><i data-lucide="rotate-ccw"></i></button>
+    </div>
+    <div class="timer" id="display">00:00:00</div>
+    <div class="footer">Live Zehavit Games</div>
+  </div>
+  <script src="script.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html> 
