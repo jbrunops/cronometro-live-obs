@@ -4,24 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=350, initial-scale=1.0">
   <title>Cronômetro Live</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <div class="container">
-    <div class="controls">
-      <select id="mode">
-        <option value="up">Contagem Crescente</option>
-        <option value="down">Contagem Regressiva</option>
-      </select>
-      <input type="number" id="hours" min="0" max="99" placeholder="Horas" />
-      <button id="start" title="Iniciar"><i data-lucide="play"></i></button>
-      <button id="stop" title="Parar"><i data-lucide="pause"></i></button>
-      <button id="reset" title="Zerar"><i data-lucide="rotate-ccw"></i></button>
+    <form id="setup" class="setup-screen">
+      <div class="mode-selector">
+        <label><input type="radio" name="mode" value="duration" checked> Contar tempo</label>
+        <label><input type="radio" name="mode" value="endtime"> Parar a live que horas?</label>
+      </div>
+      <input type="text" id="duration" placeholder="Tempo (min ou hh:mm)" required />
+      <input type="text" id="endtime" placeholder="Horário final (ex: 20:00)" style="display:none;" />
+      <button type="submit" id="start" title="Iniciar"><i data-lucide="play"></i> Iniciar</button>
+    </form>
+    <div id="timer-screen" class="timer-screen" style="display:none;">
+      <div class="timer" id="display">00:00:00</div>
+      <div class="footer">Live Zehavit Games</div>
+      <button id="reset" class="reset-btn" title="Reiniciar"><i data-lucide="rotate-ccw"></i> Reiniciar</button>
     </div>
-    <div class="timer" id="display">00:00:00</div>
-    <div class="footer">Live Zehavit Games</div>
   </div>
   <script src="script.js"></script>
   <script>

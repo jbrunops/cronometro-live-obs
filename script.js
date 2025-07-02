@@ -1,9 +1,11 @@
-const display = document.getElementById('display');
-const mode = document.getElementById('mode');
+const setupScreen = document.getElementById('setup');
+const timerScreen = document.getElementById('timer-screen');
 const hoursInput = document.getElementById('hours');
-const startBtn = document.getElementById('start');
-const stopBtn = document.getElementById('stop');
+const display = document.getElementById('display');
 const resetBtn = document.getElementById('reset');
+const durationInput = document.getElementById('duration');
+const endtimeInput = document.getElementById('endtime');
+const modeRadios = document.getElementsByName('mode');
 
 let timer = null;
 let totalSeconds = 0;
@@ -17,24 +19,48 @@ function formatTime(sec) {
   return `${h}:${m}:${s}`;
 }
 
+function parseDuration(value) {
+  if (!value) return 0;
+  if (value.includes(':')) {
+    const [h, m] = value.split(':').map(Number);
+    return (isNaN(h) ? 0 : h) * 60 + (isNaN(m) ? 0 : m);
+  }
+  return parseInt(value) || 0;
+}
+
+function secondsUntilEndTime(endTimeStr) {
+  const now = new Date();
+  const [h, m] = endTimeStr.split(':').map(Number);
+  if (isNaN(h) || isNaN(m)) return 0;
+  const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0);
+  let diff = Math.floor((end - now) / 1000);
+  if (diff < 0) diff += 24 * 3600;
+  return diff;
+}
+
+function formatTimeHM(sec) {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  return `${h}h ${m.toString().padStart(2, '0')}min`;
+}
+
 function updateDisplay() {
-  display.textContent = formatTime(currentSeconds);
+  display.textContent = formatTimeHM(currentSeconds);
 }
 
 function startTimer() {
   if (running) return;
   running = true;
   timer = setInterval(() => {
-    if (mode.value === 'up') {
-      currentSeconds++;
-    } else {
-      if (currentSeconds > 0) {
-        currentSeconds--;
-      } else {
-        stopTimer();
+    if (currentSeconds > 0) {
+      currentSeconds--;
+      updateDisplay();
+      if (currentSeconds === 300) {
+        alert('A live vai acabar em alguns minutos');
       }
+    } else {
+      stopTimer();
     }
-    updateDisplay();
   }, 1000);
 }
 
@@ -43,45 +69,57 @@ function stopTimer() {
   clearInterval(timer);
 }
 
-function resetTimer() {
+function resetAll() {
   stopTimer();
-  if (mode.value === 'down') {
-    currentSeconds = totalSeconds;
-  } else {
-    currentSeconds = 0;
-  }
-  updateDisplay();
+  setupScreen.style.display = 'flex';
+  timerScreen.style.display = 'none';
+  hoursInput.value = '';
+  durationInput.value = '';
+  endtimeInput.value = '';
+  durationInput.style.display = 'none';
+  endtimeInput.style.display = 'none';
+  durationInput.required = false;
+  endtimeInput.required = false;
 }
 
-startBtn.onclick = () => {
-  if (mode.value === 'down') {
-    const h = parseInt(hoursInput.value) || 0;
-    totalSeconds = h * 3600;
-    if (totalSeconds === 0) return;
-    if (!running) {
-      currentSeconds = currentSeconds === 0 ? totalSeconds : currentSeconds;
-      updateDisplay();
+modeRadios.forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (radio.value === 'duration' && radio.checked) {
+      durationInput.style.display = '';
+      endtimeInput.style.display = 'none';
+      durationInput.required = true;
+      endtimeInput.required = false;
+    } else if (radio.value === 'endtime' && radio.checked) {
+      durationInput.style.display = 'none';
+      endtimeInput.style.display = '';
+      durationInput.required = false;
+      endtimeInput.required = true;
     }
+  });
+});
+
+setupScreen.onsubmit = (e) => {
+  e.preventDefault();
+  let mode = 'duration';
+  modeRadios.forEach(r => { if (r.checked) mode = r.value; });
+  if (mode === 'duration') {
+    const min = parseDuration(durationInput.value);
+    if (min <= 0) return;
+    totalSeconds = min * 60;
+  } else {
+    totalSeconds = secondsUntilEndTime(endtimeInput.value);
+    if (totalSeconds <= 0) return;
   }
+  currentSeconds = totalSeconds;
+  updateDisplay();
+  setupScreen.style.display = 'none';
+  timerScreen.style.display = 'flex';
   startTimer();
 };
 
-stopBtn.onclick = stopTimer;
-resetBtn.onclick = resetTimer;
+resetBtn.onclick = resetAll;
 
-mode.onchange = () => {
-  resetTimer();
-  if (mode.value === 'down') {
-    hoursInput.disabled = false;
-  } else {
-    hoursInput.disabled = true;
-  }
-};
-
-// Inicialização
 document.addEventListener('DOMContentLoaded', () => {
-  mode.value = 'up';
-  hoursInput.disabled = true;
-  updateDisplay();
+  resetAll();
   if (window.lucide) lucide.createIcons();
 }); 
