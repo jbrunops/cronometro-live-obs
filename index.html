@@ -6,31 +6,40 @@
   <title>Cronômetro Live</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <form id="setup" class="setup-screen">
+    <div id="setup" class="setup-screen">
       <div class="mode-selector">
-        <label><input type="radio" name="mode" value="duration" checked> Contar tempo</label>
-        <label><input type="radio" name="mode" value="endtime"> Parar a live que horas?</label>
+        <button type="button" class="mode-option active" data-mode="duration">
+          Contar Tempo
+        </button>
+        <button type="button" class="mode-option" data-mode="endtime">
+          Parar às
+        </button>
       </div>
-      <input type="text" id="duration" placeholder="Tempo (min ou hh:mm)" required />
-      <input type="text" id="endtime" placeholder="Horário final (ex: 20:00)" style="display:none;" />
-      <button type="submit" id="start" title="Iniciar"><i data-lucide="play"></i> Iniciar</button>
-    </form>
-    <div id="timer-screen" class="timer-screen" style="display:none;">
-      <div class="timer" id="display">00:00:00</div>
+      
+      <div class="input-container">
+        <input type="text" id="duration" class="input-field" placeholder="Ex: 1:30, 2:45, 90min" />
+        <input type="text" id="endtime" class="input-field hidden" placeholder="Ex: 20:00, 14:30" />
+      </div>
+      
+      <button type="button" id="start" class="start-btn">
+        ▶ Iniciar Cronômetro
+      </button>
+    </div>
+    
+    <div id="timer-screen" class="timer-screen">
+      <div class="timer-display" id="display">00:00:00</div>
       <div class="footer">Live Zehavit Games</div>
-      <button id="reset" class="reset-btn" title="Reiniciar"><i data-lucide="rotate-ccw"></i> Reiniciar</button>
+      <button id="reset" class="reset-btn">
+        ↻ Reiniciar
+      </button>
     </div>
   </div>
+
   <script src="script.js"></script>
-  <script>
-    lucide.createIcons();
-  </script>
 </body>
-</html> 
+</html>
